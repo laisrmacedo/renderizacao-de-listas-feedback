@@ -10,6 +10,7 @@ import {
   LinhaHorizontal
 } from "./styled";
 import bin from "../../assets/bin.png";
+import ListaDeRemovidos from "../ListaDeRemovidos/ListaDeRemovidos";
 
 export function ListaTarefas() {
   const [lista, setLista] = useState(["Fazer exercícios", "Estudar React"]);
@@ -25,10 +26,32 @@ export function ListaTarefas() {
     setNovaTarefa("");
   };
 
+  const [listaDeRemovidos, setListaDeRemovidos] = useState([])
+
   const removeTarefa = (tarefa) => {
-    const listaFiltrada = lista.filter((item) => item !== tarefa);
-    setLista(listaFiltrada);
+    // const listaFiltrada = lista.filter((item) => item !== tarefa);
+    // setLista(listaFiltrada);
+    
+    const itemClicado = lista.filter((item) => {
+      return tarefa === item;
+    });
+
+    const arrayDosRemovidos = [...listaDeRemovidos, itemClicado[0]]
+    setListaDeRemovidos(arrayDosRemovidos)
+
+    lista.splice(lista.indexOf(itemClicado[0]), 1);
+    setLista([...lista]);
   };
+
+
+  function keyEnter(){
+    window.addEventListener("keypress", (e) => {
+      if(novaTarefa !== "" && e.key === "Enter"){
+        adicionaTarefa()
+      }
+    })
+  }
+
 
   return (
     <ListaTarefasContainer>
@@ -37,6 +60,7 @@ export function ListaTarefas() {
           placeholder="Digite aqui uma tarefa"
           value={novaTarefa}
           onChange={onChangeTarefa}
+          onKeyDown={() => keyEnter()}
         />
         <AddTaskButton onClick={adicionaTarefa}>Adicionar</AddTaskButton>
       </InputContainer>
@@ -55,6 +79,7 @@ export function ListaTarefas() {
         </ul>
       </ListaContainer>
       <LinhaHorizontal/>
+      <ListaDeRemovidos listaDeRemovidos={listaDeRemovidos}/>
     </ListaTarefasContainer>
   );
 }
